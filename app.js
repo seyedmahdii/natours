@@ -1,6 +1,8 @@
 const fs = require("fs");
 const express = require("express");
 const morgan = require("morgan");
+const tourRouter = require("./routes/tours");
+const userRouter = require("./routes/users");
 
 const app = express();
 
@@ -142,19 +144,9 @@ const updateUser = (req, res) => {
   });
 };
 
-app.route("/api/v1/tours").get(getAllTours).post(createTour);
-app
-  .route("/api/v1/tours/:id")
-  .get(getTour)
-  .patch(updateTour)
-  .delete(deleteTour);
-
-app.route("/api/v1/users").get(getAllUsers).post(createUser);
-app
-  .route("/api/v1/users/:id")
-  .get(getUser)
-  .patch(updateUser)
-  .delete(deleteUser);
+// Routes
+app.use("/api/v1/tours", tourRouter);
+app.use("/api/v1/users", userRouter);
 
 const port = 3000;
 app.listen(port, () => {
