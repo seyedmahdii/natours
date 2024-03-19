@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
+  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`),
 );
 
 const checkId = (req, res, next, val) => {
@@ -17,7 +17,6 @@ const checkId = (req, res, next, val) => {
 
 const checkBody = (req, res, next) => {
   const body = req.body;
-  console.log("here");
   if (!body.name || !body.price) {
     return res.status(400).json({
       status: "fail",
@@ -40,7 +39,7 @@ const getAllTours = (req, res) => {
 
 const getTour = (req, res) => {
   const id = Number(req.params.id);
-  const tour = tours.find((tour) => tour.id === id);
+  const tour = tours.find((tourIten) => tourIten.id === id);
 
   res.status(200).json({
     status: "success",
@@ -54,7 +53,7 @@ const createTour = (req, res) => {
   const body = req.body;
 
   const newId = tours[tours.length - 1].id + 1;
-  const newTour = Object.assign({ id: newId }, body);
+  const newTour = { id: newId, ...body };
 
   tours.push(newTour);
   fs.writeFile(
@@ -67,7 +66,7 @@ const createTour = (req, res) => {
           tour: newTour,
         },
       });
-    }
+    },
   );
 };
 
@@ -90,7 +89,7 @@ const updateTour = (req, res) => {
 };
 
 const deleteTour = (req, res) => {
-  const id = Number(req.params.id);
+  // const id = Number(req.params.id);
 
   res.status(204).json({
     status: "success",
