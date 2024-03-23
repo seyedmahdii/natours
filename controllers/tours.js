@@ -82,22 +82,25 @@ const createTour = async (req, res) => {
   }
 };
 
-const updateTour = (req, res) => {
-  const id = Number(req.params.id);
+const updateTour = async (req, res) => {
+  try {
+    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
-  if (true) {
-    return res.status(404).json({
+    res.status(200).json({
+      status: "success",
+      data: {
+        tour,
+      },
+    });
+  } catch (error) {
+    res.status(404).json({
       status: "fail",
-      message: "Invalid ID",
+      message: error,
     });
   }
-
-  res.status(200).json({
-    status: "success",
-    data: {
-      tour: "UPDATED TOUR HERE",
-    },
-  });
 };
 
 const deleteTour = (req, res) => {
