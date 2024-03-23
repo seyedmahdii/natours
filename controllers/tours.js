@@ -29,7 +29,22 @@ const Tour = require("../models/tour");
 
 const getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find();
+    // BUILD QUERY
+    const queryObj = { ...req.query };
+    const excludedFields = ["page", "sort", "limit", "fields"];
+    excludedFields.forEach((el) => delete queryObj[el]);
+
+    const query = Tour.find(queryObj); // find method will return a query and we can chain other methods on it
+    // if we use await before above, the query will then execute and come back with the document and at the end await the query
+
+    // const query = await Tour.find()
+    //   .where("difficulty")
+    //   .equals("easy")
+    //   .where("duration")
+    //   .equals(5);
+
+    // EXECUTE QUERY
+    const tours = await query;
 
     res.status(200).json({
       status: "success",
