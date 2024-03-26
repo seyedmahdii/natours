@@ -30,18 +30,27 @@ const Tour = require("../models/tour");
 const getAllTours = async (req, res) => {
   try {
     // BUILD QUERY
+    // 1A) Filtering
     const queryObj = { ...req.query };
     const excludedFields = ["page", "sort", "limit", "fields"];
     excludedFields.forEach((el) => delete queryObj[el]);
 
-    const query = Tour.find(queryObj); // find method will return a query and we can chain other methods on it
+    // 1B) Advanced filtering (gt, gte, ...)
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+    let query = Tour.find(JSON.parse(queryStr)); // find method will return a query and we can chain other methods on it
     // if we use await before above, the query will then execute and come back with the document and at the end await the query
 
-    // const query = await Tour.find()
-    //   .where("difficulty")
-    //   .equals("easy")
-    //   .where("duration")
-    //   .equals(5);
+    // 2) Sorting
+    if (req.query.sort) {
+      // to sortBy multiple fields: '-price ratingsAverage' we add space between. so we should replace , with ' '
+      const sortBy = req.query.sort.split(",").join(" ");
+      console.log("sortb", sortBy);
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort("-createdAt");
+    }
 
     // EXECUTE QUERY
     const tours = await query;
