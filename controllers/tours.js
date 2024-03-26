@@ -46,10 +46,17 @@ const getAllTours = async (req, res) => {
     if (req.query.sort) {
       // to sortBy multiple fields: '-price ratingsAverage' we add space between. so we should replace , with ' '
       const sortBy = req.query.sort.split(",").join(" ");
-      console.log("sortb", sortBy);
       query = query.sort(sortBy);
     } else {
       query = query.sort("-createdAt");
+    }
+
+    // 3) Field limiting
+    if (req.query.fields) {
+      const fields = req.query.fields.split(",").join(" ");
+      query = query.select(fields);
+    } else {
+      query = query.select("-__v");
     }
 
     // EXECUTE QUERY
