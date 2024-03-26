@@ -27,6 +27,13 @@ const Tour = require("../models/tour");
 //   next();
 // };
 
+const aliasTopTours = async (req, res, next) => {
+  req.query.limit = 5;
+  req.query.sort = "-ratingsAverage,price";
+  req.query.sort = "name,price,ratingsAverage,summary,difficulty";
+  next();
+};
+
 const getAllTours = async (req, res) => {
   try {
     // BUILD QUERY
@@ -169,4 +176,5 @@ module.exports = {
   createTour,
   updateTour,
   deleteTour,
+  aliasTopTours,
 };
