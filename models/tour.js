@@ -57,6 +57,10 @@ const tourSchema = mongoose.Schema(
       select: false, // Won't show up in the select fields (for internally use)
     },
     startDates: [Date],
+    secretTour: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -83,6 +87,14 @@ tourSchema.pre("save", function (next) {
 //   this.slug = slugify(this.name, { lower: true });
 //   next();
 // });
+
+// QUERY MIDDLEWARE
+// find, findOne, findOneAndDelete, ...
+tourSchema.pre(/^find/, function (next) {
+  // tourSchema.pre("find", function (next) {
+  this.find({ secretTour: { $ne: true } });
+  next();
+});
 
 const Tour = mongoose.model("Tour", tourSchema);
 
