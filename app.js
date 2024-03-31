@@ -20,6 +20,7 @@ app.use("/api/v1/users", userRouter);
 
 // If we get to the route *, it means that none of the routes middleware we matched
 app.all("*", (req, res, next) => {
+  // As soon as next() receives sth, it assumes that it is an error and it will jump into globalerrorhandling middleware
   next(new AppError(`Can't find ${req.originalUrl} on this Server!`, 404));
 });
 
