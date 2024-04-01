@@ -21,6 +21,7 @@ const usersSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please provide a password"],
     minLength: 8,
+    select: false,
   },
   passwordConfirm: {
     type: String,
@@ -43,6 +44,14 @@ usersSchema.pre("save", async function (next) {
   this.passwordConfirm = undefined; // We don't need to store it in the DB
   next();
 });
+
+// an instance method is a method that is available on all documents of certain collection
+usersSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword,
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 
 const User = mongoose.model("User", usersSchema);
 
